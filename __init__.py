@@ -31,21 +31,27 @@ class WemoOutletSkill(MycroftSkill):
         button_state = self.switch.get_state()
 
         if (match == 'on' and button_state == 1) or (match == 'off' and button_state == 0):
-            self.speak('The oven is already ' + match)
+            self.speak_dialog("already.set", data={"state": match})
             return
 
         self.speak('Turning the oven ' + match)
         new_state = 1 if button_state == 0 else 0
         self.switch.set_state(new_state)
+        self.speak_dialog("success", data={"state": 'off' if new_state == 0 else 'on'})
 
     @intent_file_handler('running.intent')
     def handle_running_intent(self, message):
         LOG.info("running intent")
         LOG.info(message.data)
-        self.speak('The oven is ' + ('off' if self.switch.get_state() == 0 else 'on'))
+        self.speak_dialog("light.is", data={
+            "answer": 'no' if self.switch.get_state() == 0 else 'yes'
+            "state": 'off' if self.switch.get_state() == 0 else 'on'
+        })
 
     def on_switch(self, switch):
         print("Switch found!", switch.name)
+        if switch.name != 'Outlet':
+            return
         self.switch = switch
         button_state = self.switch.get_state()
         print("State:", button_state)
