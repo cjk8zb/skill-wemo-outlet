@@ -34,7 +34,6 @@ class WemoOutletSkill(MycroftSkill):
             self.speak_dialog("already.set", data={"state": match})
             return
 
-        self.speak('Turning the oven ' + match)
         new_state = 1 if button_state == 0 else 0
         self.switch.set_state(new_state)
         self.speak_dialog("success", data={"state": 'off' if new_state == 0 else 'on'})
@@ -44,7 +43,7 @@ class WemoOutletSkill(MycroftSkill):
         LOG.info("running intent")
         LOG.info(message.data)
         self.speak_dialog("light.is", data={
-            "answer": 'no' if self.switch.get_state() == 0 else 'yes'
+            "answer": 'no' if self.switch.get_state() == 0 else 'yes',
             "state": 'off' if self.switch.get_state() == 0 else 'on'
         })
 
